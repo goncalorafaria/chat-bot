@@ -11,8 +11,8 @@ class QA(object):
             raise NotImplementedError('Not implemented')
 
         def distances(self,
-                      questions: QA.Question,
-                      metric: List[Metric]) -> List[float]:
+                      question: QA.Question,
+                      metrics: List[Metric]) -> List[float]:
             raise NotImplementedError('Not implemented')
 
         def distance(self,
