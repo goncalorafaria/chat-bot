@@ -1,5 +1,5 @@
 from core.metric import Metric
-from core.qa import QA
+from core.qa import Question
 
 from typing import List
 
@@ -7,7 +7,7 @@ from typing import List
 class Query(object):
 
     def __init__(self,
-                 question: QA.Question,
+                 question: Question,
                  metrics: List[Metric],
                  n: int):
         self.question = question
@@ -25,5 +25,5 @@ class ResultSet(Query):
             query.metrics,
             query.n)
 
-    def consider(self, question : QA.Question) -> bool:
+    def consider(self, question : Question) -> bool:
         raise NotImplementedError('Not implemented')

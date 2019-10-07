@@ -1,4 +1,4 @@
-from core.qa import QA
+from core.qa import Question
 
 
 class Metric(object):
@@ -7,6 +7,6 @@ class Metric(object):
         raise NotImplementedError('Not implemented')
 
     def measure(self,
-                question1: QA.Question,
-                question2: QA.Question) -> float:
+                question1: Question,
+                question2: Question) -> float:
         raise NotImplementedError('Not implemented')

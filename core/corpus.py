@@ -9,5 +9,6 @@ class Corpus(object):
     def query(self, q: Query) -> ResultSet:
         raise NotImplementedError('Not implemented')
 
-    def load(self, filename : str):
+    @staticmethod
+    def load(filename : str) -> Corpus:
         raise NotImplementedError('Not implemented')
