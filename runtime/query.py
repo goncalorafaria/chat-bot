@@ -1,4 +1,4 @@
-from core.metric import Metric
+from runtime.metric import Metric
 from core.qa import Question
 
 from typing import List
