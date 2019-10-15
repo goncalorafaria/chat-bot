@@ -49,7 +49,7 @@ class ResultSet(Query):
             for mt, heap_sc in self.rankings :
                 value = mt.measure(candidate, self.question)
 
-                if len(heap_sc) >= self.n:
+                if len(heap_sc) <= self.n:
                     heapq.heappush(heap_sc, self.Node(candidate,value))
                     r += 1
                 else:
