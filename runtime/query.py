@@ -1,5 +1,6 @@
 from runtime.metric import Metric
-from core.qa import Question
+from core.qa import QA, Question
+import heapq
 
 from typing import List
 
@@ -16,6 +17,19 @@ class Query(object):
 
 
 class ResultSet(Query):
+    class Node:
+        def __init__(self,
+                     q,
+                     score):
+
+            self.q = q
+            self.score = score
+
+        def __lt__(self, other):
+            return self.score > other.score
+
+        def __eq__(self, other):
+            return self.score == other.score
 
     def __init__(self,
                  query: Query):
@@ -25,5 +39,23 @@ class ResultSet(Query):
             query.metrics,
             query.n)
 
-    def consider(self, question : Question) -> bool:
-        raise NotImplementedError('Not implemented')
+        self.rankings = [(mt, []) for mt in self.metrics]
+
+    def consider(self, qa : QA) -> int:
+
+        r = 0
+
+        for candidate in qa.questions(): ## for every question in qa
+            for mt, heap_sc in self.rankings :
+                value = mt.measure(candidate, self.question)
+
+                if len(heap_sc) >= self.n:
+                    heapq.heappush(heap_sc, self.Node(candidate,value))
+                    r += 1
+                else:
+                    if value < heap_sc[0].score:
+                        heapq.heappop()
+                        heapq.heappush(heap_sc, self.Node(candidate,value))
+                        r += 1
+
+        return r

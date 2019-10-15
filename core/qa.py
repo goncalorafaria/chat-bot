@@ -22,3 +22,6 @@ class QA(object):
                  questions: List[Question],
                  answer: Answer):
         raise NotImplementedError('Not implemented')
+
+    def questions(self):
+        raise NotImplementedError('Not implemented')
