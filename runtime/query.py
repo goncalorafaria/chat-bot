@@ -27,7 +27,7 @@ class ResultSet(Query):
             self.qa = qa
 
         def __lt__(self, other):
-            return self.score > other.score
+            return self.score < other.score
 
         def __eq__(self, other):
             return self.score == other.score
@@ -37,7 +37,7 @@ class ResultSet(Query):
 
         def get_qa(self):
             return self.qa
-        
+
         def get_question(self):
             return self.q
 
@@ -60,7 +60,7 @@ class ResultSet(Query):
             for mt, heap_sc in self.rankings :
                 value = mt.measure(candidate, self.question)
 
-                if len(heap_sc) <= self.n:
+                if len(heap_sc) < self.n:
                     heapq.heappush(heap_sc, self.Node(candidate,value, qa))
                     r += 1
                 else:
