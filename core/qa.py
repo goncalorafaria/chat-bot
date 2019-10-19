@@ -5,7 +5,7 @@ import nltk
 class Question(object):
     def __init__(self,
                  q : str):
-
+        self.text = q
         self.format = {'list': nltk.word_tokenize(q),
                        'bag': set(nltk.word_tokenize(q))}
 
