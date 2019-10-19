@@ -4,25 +4,27 @@ import nltk
 import mmap
 
 class Question(object):
+    _filePath = '../files/stopwords.txt'
+    
     def __init__(self, textform: str):
         self.text = textform
         self.text = self.text.lower()
-        
+        self.textList = [] #this is what should be used by other classes
         self.wordFreq = {}
         
-        self.preProcess()
-        print(self.textList)
+        self._preProcess()
         
-    def preProcess(self):
+        
+    def _preProcess(self):
         #remove non word characters and multiple spaces
         self.textList = re.sub("[^\w]", " ",  self.text).split()
         '''
-        for i in range(len(self.textList)):
+        for i in range(len(self.textList)):                                                                   
             self.textList[i] = re.sub(r'[^\w]',' ', self.textList[i])
             self.textList[i] = re.sub(r'[\s+]',' ', self.textList[i])   
         '''
         #remove stop words
-        with open('/Users/gustavomorais/Documents/Mestrado/1ºano/1ºsemestre/LN/Projects/Project1/chat-bot/files/stopwords.txt') as stopwords:
+        with open(self._filePath) as stopwords:
             finder = mmap.mmap(stopwords.fileno(), 0, access=mmap.ACCESS_READ)
             for word in self.textList:
                 if finder.find(word.encode()) != -1:
@@ -45,10 +47,6 @@ class Question(object):
             if(i!=nWords-1):
                 string+=' '
         print(string)
-            
-            
-
-q = Question('como estas?')
 
 
 class Answer(object):
@@ -65,4 +63,6 @@ class QA(object):
     def __init__(self,
                  questions: List[Question],
                  answer: Answer):
-        raise NotImplementedError('Not implemented')
+
+        self.questions = questions
+        self.answer = answer
