@@ -1,11 +1,12 @@
 from typing import List
+import nltk
 
 
 class Question(object):
     def __init__(self,
-                 preprocessing_formats):
+                 q : str):
 
-        self.format = preprocessing_formats
+        self.format = {'bag': set(nltk.word_tokenize(q))}
 
     def get_format(self, name : str):
         return self.format[name]
