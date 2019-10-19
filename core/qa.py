@@ -6,7 +6,7 @@ class Question(object):
     def __init__(self,
                  q : str):
 
-        self.format = {'bag': set(nltk.word_tokenize(q))}
+        self.format = {'bag': nltk.word_tokenize(q)}
 
     def get_format(self, name : str):
         return self.format[name]

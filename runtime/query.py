@@ -32,6 +32,16 @@ class ResultSet(Query):
         def __eq__(self, other):
             return self.score == other.score
 
+        def get_score(self):
+            return self.score
+
+        def get_qa(self):
+            return self.qa
+        
+        def get_question(self):
+            return self.q
+
+
     def __init__(self,
                  query: Query):
 
