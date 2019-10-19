@@ -46,3 +46,10 @@ def stem(doc,is_tokenized):
         doc = tokenize(doc)
     stemmer = nltk.stem.RSLPStemmer()
     return {k: [stemmer.stem(token) for token in v] for k, v in doc.items()}
+
+def removeStopwords(doc,is_tokenized,stopwords):
+    if not is_tokenized:
+        doc = tokenize(doc)
+    stemmer = nltk.stem.RSLPStemmer()
+    return {k: [token for token in v if not token in stopwords] for k, v in doc.items()}
+
