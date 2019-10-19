@@ -3,17 +3,24 @@ from typing import List
 
 class Question(object):
     def __init__(self,
-                 textform: str):
-        raise NotImplementedError('Not implemented')
+                 preprocessing_formats):
+
+        self.format = preprocessing_formats
+
+    def get_format(self, name : str):
+        return self.format[name]
+
+    def set_format(self, name: str, prep_format):
+        self.format[name] = prep_format
 
 
 class Answer(object):
     def __init__(self,
-                 textform: str):
-        self.text = textform
+                 nr: int):
+        self.nr = nr
 
-    def get(self) -> str:
-        return self.text
+    def get(self) -> int:
+        return self.nr
 
 
 class QA(object):
@@ -21,7 +28,11 @@ class QA(object):
     def __init__(self,
                  questions: List[Question],
                  answer: Answer):
-        raise NotImplementedError('Not implemented')
+        self.qs = questions
+        self.ans = answer
 
     def questions(self):
-        raise NotImplementedError('Not implemented')
+        return self.qs
+
+    def answer(self):
+        return self.ans

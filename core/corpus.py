@@ -1,6 +1,5 @@
 from runtime.query import Query, ResultSet
 from core.qa import QA
-import pickle
 
 
 class Corpus(object):
@@ -16,15 +15,6 @@ class Corpus(object):
             rs.consider(qa)
 
         return rs
-
-    @staticmethod
-    def load(filename : str):
-        with open(filename + '.pkl', 'rb') as f:
-            return pickle.load(f)
-
-    def save(self, filename:str):
-        with open(filename + '.pkl', 'wb') as f:
-            pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
 
     def add(self, qa : QA):
         self.qa_corpus.append(qa)
