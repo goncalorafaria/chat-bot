@@ -14,7 +14,7 @@ class Corpus(object):
         for qa in self.qa_corpus:
             rs.consider(qa)
 
-        return rs
+        return rs.sort()
 
     def add(self, qa : QA):
         self.qa_corpus.append(qa)

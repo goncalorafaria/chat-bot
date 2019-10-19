@@ -52,6 +52,11 @@ class ResultSet(Query):
 
         self.rankings = [(mt, []) for mt in self.metrics]
 
+    def sort(self):
+        self.rankings.sort(key=lambda x:  x[1][0] if len(x[1]) > 0 else 100000)
+
+        return self
+
     def consider(self, qa : QA) -> int:
 
         r = 0
