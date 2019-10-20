@@ -17,7 +17,7 @@ for documento in root.findall('documento'):
     for faq in faq_list.findall('faq'):
         perguntas = faq.find('perguntas')
         for pergunta in perguntas.iter('pergunta'):
-            questions[faq.find('resposta').attrib['id']] =Question(pergunta.text)
+            questions[Question(pergunta.text)] = faq.find('resposta').attrib['id']
 
 minimal = ['a','o','um','uns','aos','os','as','num','numa','que','de','para','quê','e','em']
 
