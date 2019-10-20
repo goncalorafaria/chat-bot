@@ -43,16 +43,20 @@ class Config(object):
                         q, coded_configurations, coded=True
                     ) for q in qs], Answer(k)))
 
-        metrics = []
+        self.metrics = []
         for mf in metric_functions:
             for cc in coded_configurations:
-                metrics.append( Metric(cc,mf))
+                self.metrics.append( Metric(cc,mf))
 
-        full_rs = self.corpus.query(
+    def evalute(self):
+        
+        full_rs = self.corpus.crossed_inspection(
             Query(question=None,
-                  metrics = metrics,
+                  metrics = self.metrics,
                   n=1)
         )
+        
+        ## obtain stats
 
 
 
