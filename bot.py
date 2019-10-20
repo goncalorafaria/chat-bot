@@ -75,7 +75,7 @@ pred, labels = cfg.evalute("data/test_question.pickle")
 for km in pred.keys():
     obj = f1_score(labels, pred[km],average="micro")
     print(km.format)
-    print(" f1 score : " + str(obj) + " : " + str(km.format) + " : name: " + km.name)
+    print(" f1 score : " + str(obj) + " : " + str(Config.decode_config(km.format)) + " : name: " + km.name)
 
 
 
