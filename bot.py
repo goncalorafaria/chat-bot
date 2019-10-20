@@ -73,7 +73,7 @@ from sklearn.metrics import f1_score
 pred, labels = cfg.evalute("data/test_question.pickle")
 
 for km in pred.keys():
-    obj = f1_score(labels, pred[km],average=None)
+    obj = f1_score(labels, pred[km],average="micro")
     print(km.format)
     print(" f1 score : " + str(obj) + " : " + str(km.format) + " : name: " + km.name)
 
