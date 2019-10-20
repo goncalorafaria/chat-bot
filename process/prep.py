@@ -44,8 +44,8 @@ def lowerCase(text):
     return text.lower()
 
 
-def tokenize(doc):
-    return {k: nltk.tokenize.word_tokenize(v.text) for k, v in doc.items()}
+def tokenize(text):
+    return nltk.tokenize.word_tokenize(text)
 
 
 def stem(tokens):

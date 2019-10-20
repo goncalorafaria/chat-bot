@@ -5,7 +5,7 @@ from core.qa import Question, Answer, QA
 from runtime.metric import Metric
 
 
-def process_chain( text , coded_config ):
+def process_chain(text ,coded_config ):
 
     stream = text
     for i in range(len(coded_config)):
@@ -57,7 +57,7 @@ class Config(object):
                 qformat = {}
 
                 for cc in coded_configurations:
-                    qformat[cc] = process_chain(qtext, coded_configurations)
+                    qformat[cc] = process_chain(qtext, cc)
 
                     qs_q.append(
                         (qtext, qformat)
@@ -74,7 +74,7 @@ class Config(object):
         self.metrics = []
         for mf in metric_functions:
             for cc in coded_configurations:
-                self.metrics.append( Metric(cc,mf))
+                self.metrics.append(Metric(cc,mf))
 
     def evalute(self):
         
