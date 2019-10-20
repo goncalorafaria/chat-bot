@@ -44,7 +44,8 @@ class Config(object):
     def __init__(self,
                  filename,
                  metric_functions,
-                 configurations):
+                 configurations,
+                 metric_functions_names):
         self.corpus = Corpus()
 
         coded_configurations = [Config.code_config(c) for c in configurations]
@@ -77,9 +78,11 @@ class Config(object):
                     , Answer(k)))
 
         self.metrics = []
+        i=0
         for mf in metric_functions:
+            i+=1
             for cc in coded_configurations:
-                self.metrics.append(Metric(cc,mf))
+                self.metrics.append(Metric(cc,mf,name=metric_functions_names[i]))
 
     def evalute(self, filename):
 
