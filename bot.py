@@ -68,12 +68,12 @@ cfg = Config(filename ="data/KB.xml",
 
 print("start eval")
 
-from sklearn.metrics import skm
+from sklearn.metrics import f1_score
 
 pred, labels = cfg.evalute("data/test_question.pickle")
 
 for km in pred.keys():
-    obj = skm.f1_score(labels, pred[km])
+    obj = f1_score(labels, pred[km])
     print(km.format)
     print(" f1 score : " + str(obj) + " : " + str(km.format) + " : name: " + km.name)
 
