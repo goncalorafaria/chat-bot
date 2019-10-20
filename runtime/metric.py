@@ -1,5 +1,6 @@
 from core.qa import Question
 import nltk
+from nltk.metrics import masi_distance
 
 
 class Metric(object):
@@ -26,3 +27,11 @@ class Metric(object):
 
 def jaccart(tk1,tk2):
     return nltk.jaccard_distance(set(tk1),set(tk2))
+
+
+def masi(tk1,tk2):
+    return masi(set(tk1),set(tk2))
+
+
+# string jaro_similarity
+# jaro_winkler_similarity

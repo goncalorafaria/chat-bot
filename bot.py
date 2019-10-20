@@ -1,6 +1,7 @@
 from runtime.config import Config
 
 import nltk
+from runtime.metric import masi, jaccart
 
 
 """
@@ -31,39 +32,35 @@ for m in rs.rankings:
 
 """
 
-from runtime.metric import jaccart
+
+cc_search = []
+
+for b1 in [True,False]:
+    for b2 in [True, False]:
+        for b3 in [True, False]:
+            for b4 in [True, False]:
+                for b5 in [True, False]:
+                    cc_search.append({"pontuation": b1,
+                     "numbers": b2,
+                     "lowercase": b3,
+                     "tokenize": True,
+                     "stem": b3,
+                     "stopw_minimal": b4,
+                     "stopw_nltk":b5})
+
+
 
 cfg = Config(filename ="data/KB.xml",
              metric_functions=[
                  nltk.edit_distance,
-                 jaccart],
+                 jaccart,
+                 masi],
              metric_functions_names=[
                  "nltk.edit_distance",
-                 "jaccart"
+                 "jaccart",
+                 "masi"
              ],
-             configurations=[{"pontuation":True,
-                              "numbers":True,
-                              "lowercase":True,
-                              "tokenize":True,
-                              "stem":True,
-                              "stopw_minimal":True},
-                             {"numbers": True,
-                              "lowercase": True,
-                              "tokenize": True,
-                              "stem": True,
-                              "stopw_minimal": True},
-                             {"pontuation":True,
-                              "numbers":True,
-                              "lowercase":True,
-                              "tokenize":True,
-                              "stem":True,
-                              "stopw_nltk":True},
-                             {"numbers": True,
-                              "lowercase": True,
-                              "tokenize": True,
-                              "stem": True,
-                              "stopw_nltk": True}
-                             ]
+             configurations=cc_search
              )
 
 print("start eval")
