@@ -33,6 +33,6 @@ class Corpus(object):
 
         return hyper_rs
 
-
     def add(self, qa : QA):
+
         self.qa_corpus.append(qa)

@@ -1,0 +1,10 @@
+<!ELEMENT documentos (documento*)>
+<!ELEMENT documento (titulo,faq_list)>
+<!ELEMENT titulo (#PCDATA)>
+<!ELEMENT faq_list (faq*)>
+<!ELEMENT faq (fonte, perguntas, resposta)>
+<!ELEMENT fonte (#PCDATA)>
+<!ELEMENT perguntas (pergunta*)>
+<!ELEMENT pergunta (#PCDATA)>
+<!ELEMENT resposta (#PCDATA)>
+<!ATTLIST resposta id CDATA #REQUIRED>

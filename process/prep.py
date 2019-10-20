@@ -1,26 +1,35 @@
 import nltk
 import xml.etree.ElementTree as ET
 import string
+import pickle
 
 
 # Get questions from XML
 def processKnowledgeBase(filename):
 
+    with open("data/test_questions.pickle", "rb") as f:
+        test_group = set(pickle.load(f))
+
     tree = ET.parse(filename)
     root = tree.getroot()
     questions = {}
+    dev=[]
     for documento in root.findall('documento'):
         faq_list = documento.find('faq_list')
         for faq in faq_list.findall('faq'):
             perguntas = faq.find('perguntas')
             for pergunta in perguntas.iter('pergunta'):
 
-                if faq.find('resposta').attrib['id'] in questions:
-                    questions[faq.find('resposta').attrib['id']].append(pergunta.text)
-                else:
-                    questions[faq.find('resposta').attrib['id']] = [pergunta.text]
+                if pergunta.text is not "":
+                    if pergunta.text not in test_group:
+                        if faq.find('resposta').attrib['id'] in questions:
+                            questions[faq.find('resposta').attrib['id']].append(pergunta.text)
+                        else:
+                            questions[faq.find('resposta').attrib['id']] = [pergunta.text]
+                    else:
+                        dev.append( (faq.find('resposta').attrib['id'], pergunta.text) )
 
-    return questions
+    return questions, dev
 
 
 stopwords_list = {
