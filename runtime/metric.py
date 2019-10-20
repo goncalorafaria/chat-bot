@@ -1,4 +1,5 @@
 from core.qa import Question
+import nltk
 
 
 class Metric(object):
@@ -9,7 +10,7 @@ class Metric(object):
         self.format = format
         self.calculate = calculate
 
-        print("metric format: " + self.format)
+        #print("metric format: " + self.format)
 
     def measure(self,
                 question1: Question,
@@ -19,3 +20,7 @@ class Metric(object):
         tk2 = question2.get_format(self.format)
 
         return self.calculate(tk1,tk2)
+
+
+def jaccart(tk1,tk2):
+    return nltk.jaccard_distance(set(tk1),set(tk2))

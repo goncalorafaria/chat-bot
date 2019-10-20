@@ -9,13 +9,12 @@ def process_chain(text ,coded_config ):
 
     stream = text
     for i in range(len(coded_config)):
-        if int(coded_config[i]) == 1 :
+        if int(coded_config[i]) == 1:
             stream = Config.preprocessing_method_functions[
                 Config.preprocessing_methods[i]
             ](stream)
 
     return stream
-
 
 class Config(object):
 
@@ -80,14 +79,12 @@ class Config(object):
         
         full_rs = self.corpus.crossed_inspection(
             Query(question=None,
-                  metrics = self.metrics,
+                  metrics=self.metrics,
                   n=1)
         )
-        
+
+        return full_rs
         ## obtain stats
-
-
-
 
 
     @staticmethod

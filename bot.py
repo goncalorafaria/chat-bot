@@ -30,15 +30,25 @@ for m in rs.rankings:
         print( "score: " + str(rn.score) + " question : " + str(rn.q.get_format("bag")))
 
 """
+
+from runtime.metric import jaccart
+
 cfg = Config(filename ="data/KB.xml",
-             metric_functions=[nltk.jaccard_distance],
+             metric_functions=[nltk.edit_distance,jaccart],
              configurations=[{"pontuation":True,
                               "numbers":True,
                               "lowercase":True,
                               "tokenize":True,
                               "stem":True,
-                              "stopw_minimal":True}]
+                              "stopw_minimal":True},
+                             {"numbers": True,
+                              "lowercase": True,
+                              "tokenize": True,
+                              "stem": True,
+                              "stopw_minimal": True}
+                             ]
              )
+print("start eval")
+print(cfg.evalute())
 
-print(cfg)
 
