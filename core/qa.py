@@ -1,26 +1,15 @@
 from typing import List
-from runtime.config import Config
-from process.prep import process_chain
 
 
 class Question(object):
     def __init__(self,
                  qtext : str,
-                 configurations,
-                 coded=False):
+                 qformat):
 
-        if coded:
-            coded_configurations = configurations
-        else:
-            coded_configurations = [Config.code_config(c) for c in configurations]
-
-        self.format = {}
+        self.format = qformat
         self.text = qtext
 
-        for cc in coded_configurations:
-            self.format[cc] = process_chain(self.text, coded_configurations)
-
-
+        print(self.format)
     def get_format(self, name : str):
         return self.format[name]
 

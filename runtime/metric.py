@@ -9,6 +9,8 @@ class Metric(object):
         self.format = format
         self.calculate = calculate
 
+        print("metric format: " + self.format)
+
     def measure(self,
                 question1: Question,
                 question2: Question) -> float:

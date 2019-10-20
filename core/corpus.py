@@ -20,11 +20,13 @@ class Corpus(object):
 
         hyper_rs = []
 
+        ## pode ser feito em paralelo
+
         for qa in self.qa_corpus:
             for question in qa.questions():
                 q.question = question
                 hyper_rs.append(
-                    self.query( q )
+                    self.query(q)
                 )
 
         return hyper_rs

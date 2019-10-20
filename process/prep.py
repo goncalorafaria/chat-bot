@@ -1,13 +1,12 @@
 import nltk
 import xml.etree.ElementTree as ET
-from runtime.config import Config
 import string
 
 
 # Get questions from XML
 def processKnowledgeBase(filename):
 
-    tree = ET.parse('../data/KB.xml')
+    tree = ET.parse(filename)
     root = tree.getroot()
     questions = {}
     for documento in root.findall('documento'):
@@ -23,17 +22,6 @@ def processKnowledgeBase(filename):
 
     return questions
 
-
-def process_chain( text , coded_config ):
-
-    stream = text
-    for i in range(len(coded_config)):
-        if int(coded_config[i]) == 1 :
-            stream = Config.preprocessing_method_functions[
-                Config.preprocessing_methods[i]
-            ](stream)
-
-    return stream
 
 stopwords_list = {
     'nltk': nltk.corpus.stopwords.words('portuguese'),
@@ -72,6 +60,7 @@ def removeStopwords(tokens, stopwords):
     #    doc = tokenize(doc)
     #stemmer = nltk.stem.RSLPStemmer()
     return [token for token in tokens if not token in stopwords]
+
 
 class RemoveStopWords():
 

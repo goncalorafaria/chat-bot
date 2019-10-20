@@ -5,6 +5,18 @@ from core.qa import Question, Answer, QA
 from runtime.metric import Metric
 
 
+def process_chain( text , coded_config ):
+
+    stream = text
+    for i in range(len(coded_config)):
+        if int(coded_config[i]) == 1 :
+            stream = Config.preprocessing_method_functions[
+                Config.preprocessing_methods[i]
+            ](stream)
+
+    return stream
+
+
 class Config(object):
 
     preprocessing_methods = [
@@ -36,12 +48,28 @@ class Config(object):
         self.corpus = Corpus()
 
         coded_configurations = [Config.code_config(c) for c in configurations]
+        ## pode ser feito em paralelo
         for k,qs in prep.processKnowledgeBase(filename).items():
+            qs_q = []
+
+            for qtext in qs:
+
+                qformat = {}
+
+                for cc in coded_configurations:
+                    qformat[cc] = process_chain(qtext, coded_configurations)
+
+                    qs_q.append(
+                        (qtext, qformat)
+                    )
+
             self.corpus.add(
-                QA(
-                    [Question(
-                        q, coded_configurations, coded=True
-                    ) for q in qs], Answer(k)))
+                    QA(
+                        [Question(
+                            qtext,
+                            qformat
+                            )for qtext,qformat in qs_q ]
+                    , Answer(k)))
 
         self.metrics = []
         for mf in metric_functions:

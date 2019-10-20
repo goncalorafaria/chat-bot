@@ -1,10 +1,9 @@
-from runtime.metric import Metric
-from core.qa import Question, Answer, QA
-from runtime.query import Query
-from core.corpus import Corpus
+from runtime.config import Config
 
 import nltk
 
+
+"""
 qa = QA([
     Question("Como obter id ?"),
     Question("Como obter o identificador ?"),
@@ -30,10 +29,16 @@ for m in rs.rankings:
     for rn in m[1]:
         print( "score: " + str(rn.score) + " question : " + str(rn.q.get_format("bag")))
 
+"""
+cfg = Config(filename ="data/KB.xml",
+             metric_functions=[nltk.jaccard_distance],
+             configurations=[{"pontuation":True,
+                              "numbers":True,
+                              "lowercase":True,
+                              "tokenize":True,
+                              "stem":True,
+                              "stopw_minimal":True}]
+             )
 
-
-
-
-
-
+print(cfg)
 
