@@ -20,6 +20,7 @@ class Question(object):
         for cc in coded_configurations:
             self.format[cc] = process_chain(self.text, coded_configurations)
 
+
     def get_format(self, name : str):
         return self.format[name]
 
