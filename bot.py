@@ -37,6 +37,10 @@ cfg = Config(filename ="data/KB.xml",
              metric_functions=[
                  nltk.edit_distance,
                  jaccart],
+             metric_functions_names=[
+                 "nltk.edit_distance",
+                 "jaccart"
+             ],
              configurations=[{"pontuation":True,
                               "numbers":True,
                               "lowercase":True,
@@ -64,7 +68,17 @@ cfg = Config(filename ="data/KB.xml",
 
 print("start eval")
 
-results = cfg.evalute("data/test_question.pickle")
+from sklearn.metrics import skm
+
+pred, labels = cfg.evalute("data/test_question.pickle")
+
+for km in pred.keys():
+    obj = skm.f1_score(labels, pred[km])
+    print(km.format)
+    print(" f1 score : " + str(obj) + " : " + str(km.format) + " : name: " + km.name)
+
+
+
 
 
 

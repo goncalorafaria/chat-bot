@@ -6,9 +6,11 @@ class Metric(object):
 
     def __init__(self,
                  format : str,
-                 calculate):
+                 calculate,
+                 name=""):
         self.format = format
         self.calculate = calculate
+        self.name = name
 
         #print("metric format: " + self.format)
 
