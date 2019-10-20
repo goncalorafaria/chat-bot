@@ -1,6 +1,7 @@
 import nltk
 import xml.etree.ElementTree as ET
 import string
+import re
 
 
 # Get questions from XML
@@ -22,10 +23,19 @@ def processKnowledgeBase(filename):
 
     return questions
 
+stopwords_analysis = []
+with open('../stopwords_analysis.txt','r') as f:
+    lines = f.readlines()
+    
+    for stopword in lines:
+        stopword = re.sub(r'\s','',stopword)
+        stopwords_analysis.append(stopword)
+
 
 stopwords_list = {
     'nltk': nltk.corpus.stopwords.words('portuguese'),
-    'minimal': ['a', 'o', 'um', 'uns', 'aos', 'os', 'as', 'num', 'numa', 'que', 'de', 'para', 'quê', 'e', 'em']
+    'minimal': ['a', 'o', 'um', 'uns', 'aos', 'os', 'as', 'num', 'numa', 'que', 'de', 'para', 'quê', 'e', 'em'],
+    'analysis' : stopwords_analysis
 }
 
 
