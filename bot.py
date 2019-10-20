@@ -48,8 +48,6 @@ for b1 in [True,False]:
                      "stopw_minimal": b4,
                      "stopw_nltk":b5})
 
-
-
 cfg = Config(filename ="data/KB.xml",
              metric_functions=[
                  nltk.edit_distance,

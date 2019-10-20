@@ -30,7 +30,7 @@ def jaccart(tk1,tk2):
 
 
 def masi(tk1,tk2):
-    return masi(set(tk1),set(tk2))
+    return masi_distance(set(tk1),set(tk2))
 
 
 # string jaro_similarity
