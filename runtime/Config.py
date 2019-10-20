@@ -80,9 +80,9 @@ class Config(object):
         self.metrics = []
         i=0
         for mf in metric_functions:
-            i+=1
             for cc in coded_configurations:
                 self.metrics.append(Metric(cc,mf,name=metric_functions_names[i]))
+            i += 1
 
     def evalute(self, filename):
 
