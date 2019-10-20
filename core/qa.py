@@ -1,13 +1,24 @@
 from typing import List
-import nltk
+from runtime.config import Config
+from process.prep import process_chain
 
 
 class Question(object):
     def __init__(self,
-                 q : str):
+                 qtext : str,
+                 configurations,
+                 coded=False):
 
-        self.format = {'list': nltk.word_tokenize(q),
-                       'bag': set(nltk.word_tokenize(q))}
+        if coded:
+            coded_configurations = configurations
+        else:
+            coded_configurations = [Config.code_config(c) for c in configurations]
+
+        self.format = {}
+        self.text = qtext
+
+        for cc in coded_configurations:
+            self.format[cc] = process_chain(self.text, coded_configurations)
 
     def get_format(self, name : str):
         return self.format[name]

@@ -8,7 +8,7 @@ from typing import List
 class Query(object):
 
     def __init__(self,
-                 question: Question,
+                 question,
                  metrics: List[Metric],
                  n=1):
         self.question = question
@@ -40,7 +40,6 @@ class ResultSet(Query):
 
         def get_question(self):
             return self.q
-
 
     def __init__(self,
                  query: Query):
