@@ -34,7 +34,9 @@ for m in rs.rankings:
 from runtime.metric import jaccart
 
 cfg = Config(filename ="data/KB.xml",
-             metric_functions=[nltk.edit_distance,jaccart],
+             metric_functions=[
+                 nltk.edit_distance,
+                 jaccart],
              configurations=[{"pontuation":True,
                               "numbers":True,
                               "lowercase":True,
@@ -45,10 +47,25 @@ cfg = Config(filename ="data/KB.xml",
                               "lowercase": True,
                               "tokenize": True,
                               "stem": True,
-                              "stopw_minimal": True}
+                              "stopw_minimal": True},
+                             {"pontuation":True,
+                              "numbers":True,
+                              "lowercase":True,
+                              "tokenize":True,
+                              "stem":True,
+                              "stopw_nltk":True},
+                             {"numbers": True,
+                              "lowercase": True,
+                              "tokenize": True,
+                              "stem": True,
+                              "stopw_nltk": True}
                              ]
              )
+
 print("start eval")
-print(cfg.evalute())
+
+results = cfg.evalute("data/test_question.pickle")
+
+
 
 

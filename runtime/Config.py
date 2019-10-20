@@ -3,6 +3,7 @@ from runtime.query import Query
 from process import prep
 from core.qa import Question, Answer, QA
 from runtime.metric import Metric
+import pickle
 
 
 def process_chain(text ,coded_config ):
@@ -48,7 +49,11 @@ class Config(object):
 
         coded_configurations = [Config.code_config(c) for c in configurations]
         ## pode ser feito em paralelo
-        for k,qs in prep.processKnowledgeBase(filename).items():
+        train, dev = prep.processKnowledgeBase(filename)
+
+        self.dev = dev
+
+        for k,qs in train.items():
             qs_q = []
 
             for qtext in qs:
@@ -58,8 +63,9 @@ class Config(object):
                 for cc in coded_configurations:
                     qformat[cc] = process_chain(qtext, cc)
 
-                    qs_q.append(
-                        (qtext, qformat)
+
+                qs_q.append(
+                    (qtext, qformat)
                     )
 
             self.corpus.add(
@@ -67,7 +73,7 @@ class Config(object):
                         [Question(
                             qtext,
                             qformat
-                            )for qtext,qformat in qs_q ]
+                            )for qtext, qformat in qs_q ]
                     , Answer(k)))
 
         self.metrics = []
@@ -75,16 +81,43 @@ class Config(object):
             for cc in coded_configurations:
                 self.metrics.append(Metric(cc,mf))
 
-    def evalute(self):
-        
-        full_rs = self.corpus.crossed_inspection(
-            Query(question=None,
-                  metrics=self.metrics,
-                  n=1)
-        )
+    def evalute(self, filename):
 
-        return full_rs
-        ## obtain stats
+        queries = []
+        for ans_nr, qtext in self.dev:
+            qformat = {}
+
+            for m in self.metrics:
+
+                qformat[m.format] = process_chain(qtext, m.format)
+
+            queries.append( (
+                Query(question=
+                      Question(qtext,qformat),
+                  metrics=self.metrics,
+                  n=1),ans_nr ) )
+
+        answ = []
+
+        mscores= {}
+
+        for m in self.metrics:
+            mscores[m] = []
+
+        c=0
+        print(len(queries))
+        for qq, ans in queries:
+            rs = self.corpus.query(qq)
+
+            for m, hp in rs.rankings:
+                mscores[m].append(hp[0].qa.ans.nr)
+                
+            answ.append(
+                ans
+            )
+            
+
+        return mscores, answ
 
 
     @staticmethod
