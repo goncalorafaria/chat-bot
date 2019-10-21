@@ -24,7 +24,7 @@ def processKnowledgeBase(filename):
     return questions
 
 stopwords_analysis = []
-with open('../stopwords_analysis.txt','r') as f:
+with open('data/stopwords_analysis.txt','r') as f:
     lines = f.readlines()
     
     for stopword in lines:

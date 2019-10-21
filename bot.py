@@ -1,4 +1,4 @@
-from runtime.config import Config
+from runtime.Config import Config
 
 import nltk
 
@@ -37,7 +37,7 @@ cfg = Config(filename ="data/KB.xml",
                               "lowercase":True,
                               "tokenize":True,
                               "stem":True,
-                              "stopw_minimal":True}]
+                              "stopw_analysis":True}]
              )
 
 print(cfg)
