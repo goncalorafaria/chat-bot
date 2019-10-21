@@ -30,8 +30,17 @@ for m in rs.rankings:
         print( "score: " + str(rn.score) + " question : " + str(rn.q.get_format("bag")))
 
 """
+
+from runtime.metric import jaccart
+
 cfg = Config(filename ="data/KB.xml",
-             metric_functions=[nltk.jaccard_distance],
+             metric_functions=[
+                 nltk.edit_distance,
+                 jaccart],
+             metric_functions_names=[
+                 "nltk.edit_distance",
+                 "jaccart"
+             ],
              configurations=[{"pontuation":True,
                               "numbers":True,
                               "lowercase":True,
@@ -40,5 +49,20 @@ cfg = Config(filename ="data/KB.xml",
                               "stopw_analysis":True}]
              )
 
-print(cfg)
+print("start eval")
+
+from sklearn.metrics import f1_score
+
+pred, labels = cfg.evalute("data/test_question.pickle")
+
+for km in pred.keys():
+    obj = f1_score(labels, pred[km],average="micro")
+    print(km.format)
+    print(" f1 score : " + str(obj) + " : " + str(Config.decode_config(km.format)) + " : name: " + km.name)
+
+
+
+
+
+
 

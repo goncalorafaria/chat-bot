@@ -69,7 +69,7 @@ class ResultSet(Query):
                     r += 1
                 else:
                     if value < heap_sc[0].score:
-                        heapq.heappop()
+                        heapq.heappop(heap_sc)
                         heapq.heappush(heap_sc, self.Node(candidate, value, qa))
                         r += 1
 
