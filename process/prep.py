@@ -5,10 +5,13 @@ import pickle
 import sklearn
 import scipy
 from sklearn.decomposition import PCA
+from numpy import random
 
 
 # Get questions from XML
 def processKnowledgeBase(filename):
+
+    random.seed(2)
 
     with open("data/test_questions.pickle", "rb") as f:
         test_group = set(pickle.load(f))
@@ -17,6 +20,7 @@ def processKnowledgeBase(filename):
     root = tree.getroot()
     questions = {}
     dev=[]
+
     for documento in root.findall('documento'):
         faq_list = documento.find('faq_list')
         for faq in faq_list.findall('faq'):
@@ -24,15 +28,27 @@ def processKnowledgeBase(filename):
             for pergunta in perguntas.iter('pergunta'):
 
                 if pergunta.text is not "":
-                    if pergunta.text not in test_group:
-                        if faq.find('resposta').attrib['id'] in questions:
-                            questions[faq.find('resposta').attrib['id']].append(pergunta.text)
-                        else:
-                            questions[faq.find('resposta').attrib['id']] = [pergunta.text]
-                    else:
-                        dev.append( (faq.find('resposta').attrib['id'], pergunta.text) )
 
-    return questions, dev
+                    if faq.find('resposta').attrib['id'] in questions:
+                        questions[faq.find('resposta').attrib['id']].append(pergunta.text)
+                    else:
+                        questions[faq.find('resposta').attrib['id']] = [pergunta.text]
+
+    train = {}
+    dev = {}
+
+    for ans, qs in questions.items():
+        maxi = len(qs) - 1
+        pick = random.randint(0, maxi)
+
+        dev[ans] = qs[pick]
+
+        if pick != len(qs)-1:
+            train[ans] = qs[:pick] + qs[pick+1:]
+        else:
+            train[ans] = qs[:pick]
+
+    return train, dev
 
 def get_fromfile(fname):
     with open(fname, 'r') as file:
@@ -88,7 +104,6 @@ class RemoveStopWords():
     def __call__(self, tokens):
         return [token for token in tokens if not token in self.stopwords]
 
-
 class TFidf:
     def __init__(self,
                  train_question, lowercase, stopwords):
@@ -104,13 +119,14 @@ class TFidf:
         flat = []
         for qs in train_question.values():
             for quest in qs:
-                flat.append(quest)
+                flat.append(" ".join(stem(tokenize(quest))))
+
         X = self.vectorizer.fit_transform(flat)
 
-        self.pca = PCA(n_components=600)
-        self.pca.fit(X.toarray())
+        #self.pca = PCA(n_components=800)
+        #self.pca.fit(X.toarray())
 
     def __call__(self, string):
         v = self.vectorizer.transform([" ".join(string)])
-        return self.pca.transform(v.toarray())[0]
-        #return v.toarray()[0]
+        #return self.pca.transform(v.toarray())[0]
+        return v.toarray()[0]

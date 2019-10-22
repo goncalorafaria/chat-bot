@@ -91,10 +91,10 @@ class Config(object):
                 self.metrics.append(Metric(cc,mf,name=metric_functions_names[i]))
             i += 1
 
-    def evalute(self, filename):
+    def evalute(self):
 
         queries = []
-        for ans_nr, qtext in self.dev:
+        for ans_nr, qtext in self.dev.items():
             qformat = {}
 
             for m in self.metrics:

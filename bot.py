@@ -82,9 +82,9 @@ cfg = Config(filename ="data/KB.xml",
                 {"lowercase":True,
                  "pontuation":True,
                  "stopw_minimal":True,
+                 "stem":True,
                  "tokenize":True,
-                 "stem":True ,
-                 "numbers":True ,
+                 "numbers":True,
                  "tfidf": True}]
              )
 
@@ -103,7 +103,7 @@ print("start eval")
 
 from sklearn.metrics import accuracy_score
 
-pred, labels = cfg.evalute("data/test_question.pickle")
+pred, labels = cfg.evalute()
 
 for km in pred.keys():
     obj = accuracy_score(labels, pred[km],normalize=True)
