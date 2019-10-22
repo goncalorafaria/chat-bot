@@ -15,6 +15,15 @@ class Corpus(object):
             rs.consider(qa)
 
         return rs.sort()
+    
+    def queryGroup(self, q: Query) -> ResultSet:
+
+        rs = ResultSet(q)
+
+        for qa in self.qa_corpus:
+            rs.considerGroup(qa)
+
+        return rs.sort()
 
     def crossed_inspection(self, q : Query) -> [ResultSet]:
 
