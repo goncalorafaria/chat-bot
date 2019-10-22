@@ -36,3 +36,12 @@ class Corpus(object):
     def add(self, qa : QA):
 
         self.qa_corpus.append(qa)
+
+    def queryGroup(self, q: Query) -> ResultSet:
+
+        rs = ResultSet(q)
+
+        for qa in self.qa_corpus:
+            rs.considerGroup(qa)
+
+        return rs.sort()
