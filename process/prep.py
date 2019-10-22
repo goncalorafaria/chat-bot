@@ -15,6 +15,7 @@ def processKnowledgeBase(filename):
     root = tree.getroot()
     questions = {}
     dev=[]
+   
     for documento in root.findall('documento'):
         faq_list = documento.find('faq_list')
         for faq in faq_list.findall('faq'):
@@ -29,17 +30,51 @@ def processKnowledgeBase(filename):
                             questions[faq.find('resposta').attrib['id']] = [pergunta.text]
                     else:
                         dev.append( (faq.find('resposta').attrib['id'], pergunta.text) )
-
+                    
     return questions, dev
 
+'''
+def getVocabulary():
+    vocabulary = []
+    with open('../data/questions.txt') as f:
+        vocabulary = f.read().split(' ')
+    
+    vocabulary = list(dict.fromkeys(vocabulary))
+    
+    return vocabulary
+'''
+def getQuestionList(questions): #para as questões deixarem de estar agrupadas em listas de 4
+    questionList = []
+    groupedQuestions = list(questions.values())
+    
+    for questionGroup in groupedQuestions:
+        for question in questionGroup:
+            questionList.append(question)
+    
+    return questionList
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+vectorizer = TfidfVectorizer()
+questions, dev = processKnowledgeBase('data/KB.xml')
+
+tfidfVectors = vectorizer.fit_transform(getQuestionList(questions)) 
+'''
+feature_names = vectorizer.get_feature_names()
+dense = vectors.todense()
+denselist = dense.tolist()
+df = pd.DataFrame(denselist, columns=feature_names)
+df.to_csv(r'../data/tf-idf_DF.csv')
+
+'''
 stopwords_analysis = []
 with open('data/stopwords_analysis.txt','r') as f:
     lines = f.readlines()
     
     for stopword in lines:
         stopword = re.sub(r'\s','',stopword)
+        stopword = re.sub(r'\W','',stopword)
         stopwords_analysis.append(stopword)
-
 
 stopwords_list = {
     'nltk': nltk.corpus.stopwords.words('portuguese'),
