@@ -3,7 +3,6 @@ from runtime.query import Query
 from process import prep
 from core.qa import Question, Answer, QA
 from runtime.metric import Metric
-import pickle
 
 
 def process_chain(text ,coded_config ):
@@ -26,7 +25,9 @@ class Config(object):
         "tokenize",
         "stem",
         "stopw_nltk",
-        "stopw_minimal"
+        "stopw_minimal",
+        "tfidf",
+
     ]
 
     preprocessing_method_functions = {
@@ -39,6 +40,7 @@ class Config(object):
             prep.stopwords_list["nltk"]),
         "stopw_minimal": prep.RemoveStopWords(
             prep.stopwords_list["minimal"]),
+        "tfidf" : None
     }
 
     def __init__(self,
@@ -53,7 +55,13 @@ class Config(object):
         train, dev = prep.processKnowledgeBase(filename)
 
         self.dev = dev
+        print("dev size")
+        print(len(dev))
 
+        Config.preprocessing_method_functions["tfidf"] = prep.TFidf(
+            train,
+            lowercase=True,
+            stopwords=prep.stopwords_list["minimal"])
         for k,qs in train.items():
             qs_q = []
 
@@ -63,7 +71,6 @@ class Config(object):
 
                 for cc in coded_configurations:
                     qformat[cc] = process_chain(qtext, cc)
-
 
                 qs_q.append(
                     (qtext, qformat)
@@ -108,8 +115,14 @@ class Config(object):
             mscores[m] = []
 
         c=0
-        print(len(queries))
+
+        #for qq, ans in queries:
+        #    print(qq.question.text)
+
         for qq, ans in queries:
+
+            #print(qq.question.text)
+
             rs = self.corpus.query(qq)
 
             for m, hp in rs.rankings:

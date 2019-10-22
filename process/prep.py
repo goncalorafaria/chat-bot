@@ -2,6 +2,9 @@ import nltk
 import xml.etree.ElementTree as ET
 import string
 import pickle
+import sklearn
+import scipy
+from sklearn.decomposition import PCA
 
 
 # Get questions from XML
@@ -31,11 +34,16 @@ def processKnowledgeBase(filename):
 
     return questions, dev
 
+def get_fromfile(fname):
+    with open(fname, 'r') as file:
+        stopwords = [line.split('\n')[0] for line in file.readlines()]
+    return stopwords
 
 stopwords_list = {
     'nltk': nltk.corpus.stopwords.words('portuguese'),
-    'minimal': ['a', 'o', 'um', 'uns', 'aos', 'os', 'as', 'num', 'numa', 'que', 'de', 'para', 'quê', 'e', 'em']
+    'minimal': get_fromfile("data/stops.txt")
 }
+
 
 
 # Preprocessing functions
@@ -79,3 +87,30 @@ class RemoveStopWords():
 
     def __call__(self, tokens):
         return [token for token in tokens if not token in self.stopwords]
+
+
+class TFidf:
+    def __init__(self,
+                 train_question, lowercase, stopwords):
+        self.vectorizer = sklearn.\
+            feature_extraction.\
+            text.\
+            TfidfVectorizer(analyzer='word',
+                            lowercase=lowercase,
+                            stop_words=stopwords,
+                            smooth_idf=True,
+                            sublinear_tf=True,
+                            max_features=5000)
+        flat = []
+        for qs in train_question.values():
+            for quest in qs:
+                flat.append(quest)
+        X = self.vectorizer.fit_transform(flat)
+
+        self.pca = PCA(n_components=600)
+        self.pca.fit(X.toarray())
+
+    def __call__(self, string):
+        v = self.vectorizer.transform([" ".join(string)])
+        return self.pca.transform(v.toarray())[0]
+        #return v.toarray()[0]
