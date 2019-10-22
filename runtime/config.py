@@ -91,7 +91,13 @@ class Config(object):
                 self.metrics.append(Metric(cc,mf,name=metric_functions_names[i]))
             i += 1
 
-    def evalute(self):
+    def evaluate(self):
+        return self._evaluate(self.corpus.query)
+
+    def evaluateGroup(self):
+        return self._evaluate(self.corpus.queryGroup)
+
+    def _evaluate(self, query_func):
 
         queries = []
         for ans_nr, qtext in self.dev.items():
@@ -116,14 +122,9 @@ class Config(object):
 
         c=0
 
-        #for qq, ans in queries:
-        #    print(qq.question.text)
-
         for qq, ans in queries:
 
-            #print(qq.question.text)
-
-            rs = self.corpus.query(qq)
+            rs = query_func(qq)
 
             for m, hp in rs.rankings:
                 mscores[m].append(hp[0].qa.ans.nr)

@@ -10,8 +10,7 @@ from numpy import random
 
 # Get questions from XML
 def processKnowledgeBase(filename):
-
-    random.seed(2)
+    random.seed(97031)
 
     with open("data/test_questions.pickle", "rb") as f:
         test_group = set(pickle.load(f))
@@ -103,6 +102,7 @@ class RemoveStopWords():
 
     def __call__(self, tokens):
         return [token for token in tokens if not token in self.stopwords]
+
 
 class TFidf:
     def __init__(self,

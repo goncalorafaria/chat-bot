@@ -19,7 +19,7 @@ class Query(object):
 class ResultSet(Query):
     class Node:
         def __init__(self,
-                     q: Question,
+                     q,
                      score: float,
                      qa: QA):
             self.q = q
@@ -75,3 +75,23 @@ class ResultSet(Query):
 
         return r
 
+    def considerGroup(self, qa: QA) -> int:
+
+        r = 0
+
+        for mt, heap_sc in self.rankings:
+            coe = 1 / len(qa.questions())
+            value = 0
+            for candidate in qa.questions():  ## for every question in qa
+                value += coe * mt.measure(candidate, self.question)
+
+            if len(heap_sc) < self.n:
+                heapq.heappush(heap_sc, self.Node(None, value, qa))
+                r += 1
+            else:
+                if value < heap_sc[0].score:
+                    heapq.heappop(heap_sc)
+                    heapq.heappush(heap_sc, self.Node(None, value, qa))
+                    r += 1
+
+            return r
