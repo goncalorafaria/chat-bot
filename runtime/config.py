@@ -47,7 +47,8 @@ class Config(object):
                  filename,
                  metric_functions,
                  configurations,
-                 metric_functions_names):
+                 metric_functions_names,
+                 get_mat=True):
         self.corpus = Corpus()
 
         coded_configurations = [Config.code_config(c) for c in configurations]
@@ -58,10 +59,11 @@ class Config(object):
         print("dev size")
         print(len(dev))
 
-        Config.preprocessing_method_functions["tfidf"] = prep.TFidf(
-            train,
-            lowercase=True,
-            stopwords=prep.stopwords_list["minimal"])
+        if get_mat :
+            Config.preprocessing_method_functions["tfidf"] = prep.TFidf(
+                train,
+                lowercase=True,
+                stopwords=prep.stopwords_list["minimal"])
         for k,qs in train.items():
             qs_q = []
 

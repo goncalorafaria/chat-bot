@@ -39,6 +39,7 @@ for b1 in [True,False]:
                      "stopw_nltk":b5,
                      "tfidf":False})
 
+"""
 cfg1 = Config(filename ="data/KB.xml",
              metric_functions=[
                  spatial.distance.cosine,
@@ -63,7 +64,7 @@ for km in pred.keys():
 filehandler = open("acc_array_tdidf.obj","wb")
 pickle.dump(accuracy,filehandler)
 filehandler.close()
-
+"""
 #####
 #####
 
@@ -71,7 +72,7 @@ cfg2 = Config(filename ="data/KB.xml",
              metric_functions=[
                  jaccart,
                  masi,
-                 nltk.metrics.distance.edit_distance],
+                 nltk.edit_distance],
              metric_functions_names=[
                  "jaccart",
                  "masi",
@@ -79,7 +80,7 @@ cfg2 = Config(filename ="data/KB.xml",
              ],
              configurations=
                  cc_trad_search
-             )
+             ,get_mat=False)
 
 pred, labels = cfg2.evaluate()
 
@@ -129,7 +130,7 @@ cfg4 = Config(filename ="data/KB.xml",
              metric_functions=[
                  jaccart,
                  masi,
-                 nltk.metrics.distance.edit_distance],
+                 nltk.edit_distance],
              metric_functions_names=[
                  "jaccart",
                  "masi",
