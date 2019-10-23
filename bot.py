@@ -2,54 +2,10 @@ from runtime.config import Config
 
 import nltk
 from runtime.metric import masi, jaccart
+from sklearn.metrics import accuracy_score
+from scipy import spatial
+import pickle
 
-
-"""
-qa = QA([
-    Question("Como obter id ?"),
-    Question("Como obter o identificador ?"),
-    Question("Como obter o número de identificação ?")]
-    , Answer(1))
-
-kb = Corpus()
-
-kb.add(qa)
-
-edit_distance_metric = Metric("list", nltk.edit_distance)
-
-jaccard_metric = Metric("bag", nltk.jaccard_distance)
-
-qy = Query(Question("Como obter ident ?"), [edit_distance_metric,jaccard_metric ], n=3)
-
-rs = kb.query(qy)
-
-
-print("query : Como obter ident ? ")
-
-for m in rs.rankings:
-    for rn in m[1]:
-        print( "score: " + str(rn.score) + " question : " + str(rn.q.get_format("bag")))
-
-
-"""
-"""
-cc_search = []
-
-for b1 in [True,False]:
-    for b2 in [True, False]:
-        for b3 in [True, False]:
-            for b4 in [True, False]:
-                for b5 in [True, False]:
-                    cc_search.append({"pontuation": b1,
-                     "numbers": b2,
-                     "lowercase": b3,
-                     "tokenize": True,
-                     "stem": b3,
-                     "stopw_minimal": b4,
-                     "stopw_nltk":b5,
-                     "tfidf":False})
-
-"""
 cc_search = []
 
 for b1 in [True,False]:
@@ -67,10 +23,23 @@ for b1 in [True,False]:
                      "tfidf":True})
 
 
-from scipy import spatial
-import pickle
+cc_trad_search = []
 
-cfg = Config(filename ="data/KB.xml",
+for b1 in [True,False]:
+    for b2 in [True, False]:
+        for b3 in [True, False]:
+            for b4 in [True, False]:
+                for b5 in [True, False]:
+                    cc_trad_search.append({"pontuation": True,
+                     "numbers": b1,
+                     "lowercase": b2,
+                     "tokenize": True,
+                     "stem": b3,
+                     "stopw_minimal": b4,
+                     "stopw_nltk":b5,
+                     "tfidf":False})
+
+cfg1 = Config(filename ="data/KB.xml",
              metric_functions=[
                  spatial.distance.cosine,
                  spatial.distance.euclidean],
@@ -82,18 +51,44 @@ cfg = Config(filename ="data/KB.xml",
                  cc_search
              )
 
-print("start eval")
-
-from sklearn.metrics import accuracy_score
-
-pred, labels = cfg.evaluate()
+pred, labels = cfg1.evaluate()
 
 accuracy = []
 for km in pred.keys():
     obj = accuracy_score(labels, pred[km],normalize=True)
     print(km.format)
-    print(" f1 score : " + str(obj) + " : " + str(Config.decode_config(km.format)) + " : name: " + km.name)
-    accuracy.append([str(Config.decode_config(km.format)), obj])
+    print(" acc : " + str(obj) + " : " + str(Config.decode_config(km.format)) + " : name: " + km.name)
+    accuracy.append([str(Config.decode_config(km.format)), km.name, obj])
+
+filehandler = open("acc_array_tdidf.obj","wb")
+pickle.dump(accuracy,filehandler)
+filehandler.close()
+
+#####
+#####
+
+cfg2 = Config(filename ="data/KB.xml",
+             metric_functions=[
+                 jaccart,
+                 masi,
+                 nltk.metrics.distance.edit_distance],
+             metric_functions_names=[
+                 "jaccart",
+                 "masi",
+                 "edit_distance"
+             ],
+             configurations=
+                 cc_trad_search
+             )
+
+pred, labels = cfg2.evaluate()
+
+accuracy = []
+for km in pred.keys():
+    obj = accuracy_score(labels, pred[km],normalize=True)
+    print(km.format)
+    print(" acc : " + str(obj) + " : " + str(Config.decode_config(km.format)) + " : name: " + km.name)
+    accuracy.append([str(Config.decode_config(km.format)), km.name, obj])
 
 filehandler = open("acc_array.obj","wb")
 pickle.dump(accuracy,filehandler)
@@ -102,26 +97,59 @@ filehandler.close()
 print("eval ended")
 
 
+cfg3 = Config(filename ="data/KB.xml",
+             metric_functions=[
+                 spatial.distance.cosine,
+                 spatial.distance.euclidean],
+             metric_functions_names=[
+                 "cosine",
+                 "euclidean"
+             ],
+             configurations=
+                 cc_search
+             )
 
+pred, labels = cfg3.evaluateGroup()
 
-"""
-from process import prep
+accuracy = []
+for km in pred.keys():
+    obj = accuracy_score(labels, pred[km],normalize=True)
+    print(km.format)
+    print(" acc : " + str(obj) + " : " + str(Config.decode_config(km.format)) + " : name: " + km.name)
+    accuracy.append([str(Config.decode_config(km.format)), km.name, obj])
 
-q, dev = prep.processKnowledgeBase("data/KB.xml")
+filehandler = open("group_acc_array_tdidf.obj","wb")
+pickle.dump(accuracy,filehandler)
+filehandler.close()
 
-flat = []
-for qs in q.values():
-    for quest in qs:
-        flat.append(quest)
+#####
+#####
 
-tfidf = prep.TFidf(flat)
+cfg4 = Config(filename ="data/KB.xml",
+             metric_functions=[
+                 jaccart,
+                 masi,
+                 nltk.metrics.distance.edit_distance],
+             metric_functions_names=[
+                 "jaccart",
+                 "masi",
+                 "edit_distance"
+             ],
+             configurations=
+                 cc_trad_search
+             )
 
+pred, labels = cfg4.evaluateGroup()
 
-a = tfidf(["Como obter o identificador, ao aceder ao portal ?"])
+accuracy = []
+for km in pred.keys():
+    obj = accuracy_score(labels, pred[km],normalize=True)
+    print(km.format)
+    print(" acc : " + str(obj) + " : " + str(Config.decode_config(km.format)) + " : name: " + km.name)
+    accuracy.append([str(Config.decode_config(km.format)), km.name, obj])
 
-print(len(a))
+filehandler = open("group_acc_array.obj","wb")
+pickle.dump(accuracy,filehandler)
+filehandler.close()
 
-"""
-
-
-
+print("eval ended")

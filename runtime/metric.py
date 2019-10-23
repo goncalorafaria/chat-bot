@@ -26,8 +26,11 @@ class Metric(object):
 
 
 def jaccart(tk1,tk2):
-    return nltk.jaccard_distance(set(tk1),set(tk2))
 
+    if len(tk1) == 0 and (len(tk2)==0):
+        return 3000
+
+    return nltk.jaccard_distance(set(tk1),set(tk2))
 
 def masi(tk1,tk2):
     return masi_distance(set(tk1),set(tk2))

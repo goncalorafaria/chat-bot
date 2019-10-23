@@ -61,6 +61,7 @@ class ResultSet(Query):
         r = 0
 
         for candidate in qa.questions(): ## for every question in qa
+
             for mt, heap_sc in self.rankings :
                 value = mt.measure(candidate, self.question)
 
