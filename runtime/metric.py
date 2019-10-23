@@ -27,13 +27,36 @@ class Metric(object):
 
 def jaccart(tk1,tk2):
 
-    if len(tk1) == 0 and (len(tk2)==0):
-        return 3000
+    stki1 = set(tk1)
+    stki2 = set(tk2)
 
-    return nltk.jaccard_distance(set(tk1),set(tk2))
+    l_inters = len( stki1.intersection(stki2) )
+    l_unions = len( stki1.union(stki2) )
 
-def masi(tk1,tk2):
-    return masi_distance(set(tk1),set(tk2))
+
+    if (l_unions == 0):
+        return 1
+    else:
+        return l_inters / l_unions
+
+def dice(tk1,tk2):
+
+    stki1 = set(tk1)
+    stki2 = set(tk2)
+
+    l_inters = len( stki1.intersection(stki2) )
+    l_1 = len(stki1 )
+    l_2 = len(stki2)
+
+    if (l_1 == 0 or l_2 == 0):
+        return 1
+    else:
+        return 1 - 2 * l_inters / (l_1 * l_2)
+
+
+#def masi(tk1,tk2):
+
+#    return masi_distance(set(tk1),set(tk2))
 
 
 # string jaro_similarity

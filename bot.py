@@ -1,7 +1,7 @@
 from runtime.config import Config
 
 import nltk
-from runtime.metric import masi, jaccart
+from runtime.metric import dice, jaccart
 from sklearn.metrics import accuracy_score
 from scipy import spatial
 import pickle
@@ -71,11 +71,11 @@ filehandler.close()
 cfg2 = Config(filename ="data/KB.xml",
              metric_functions=[
                  jaccart,
-                 masi,
+                 dice,
                  nltk.edit_distance],
              metric_functions_names=[
                  "jaccart",
-                 "masi",
+                 "dice",
                  "edit_distance"
              ],
              configurations=
@@ -137,7 +137,8 @@ cfg4 = Config(filename ="data/KB.xml",
                  "edit_distance"
              ],
              configurations=
-                 cc_trad_search
+                 cc_trad_search,
+             get_mat=False
              )
 
 pred, labels = cfg4.evaluateGroup()
