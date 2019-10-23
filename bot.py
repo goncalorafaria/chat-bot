@@ -70,13 +70,9 @@ filehandler.close()
 
 cfg2 = Config(filename ="data/KB.xml",
              metric_functions=[
-                 jaccart,
-                 dice,
-                 nltk.edit_distance],
+                 jaccart],
              metric_functions_names=[
-                 "jaccart",
-                 "dice",
-                 "edit_distance"
+                 "jaccart"
              ],
              configurations=
                  cc_trad_search
@@ -129,11 +125,11 @@ filehandler.close()
 cfg4 = Config(filename ="data/KB.xml",
              metric_functions=[
                  jaccart,
-                 masi,
+                 dice,
                  nltk.edit_distance],
              metric_functions_names=[
                  "jaccart",
-                 "masi",
+                 "dice",
                  "edit_distance"
              ],
              configurations=

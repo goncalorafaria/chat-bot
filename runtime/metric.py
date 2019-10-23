@@ -30,14 +30,13 @@ def jaccart(tk1,tk2):
     stki1 = set(tk1)
     stki2 = set(tk2)
 
-    l_inters = len( stki1.intersection(stki2) )
+    l_inters = len(stki1.intersection(stki2))
     l_unions = len( stki1.union(stki2) )
-
 
     if (l_unions == 0):
         return 1
     else:
-        return l_inters / l_unions
+        return 1 - l_inters / l_unions
 
 def dice(tk1,tk2):
 

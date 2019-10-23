@@ -44,4 +44,4 @@ class Corpus(object):
         for qa in self.qa_corpus:
             rs.considerGroup(qa)
 
-        return rs.sort()
+        return rs
