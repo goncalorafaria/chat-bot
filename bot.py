@@ -122,12 +122,35 @@ for km in pred.keys():
 filehandler = open("group_acc_array_tdidf.obj","wb")
 pickle.dump(accuracy,filehandler)
 filehandler.close()
-
+"""
 #####
 #####
 
-cfg4 = Config(filename ="data/KB.xml",
-             metric_functions=[
+cc_trad_search = []
+
+for b1 in [True,False]:
+    for b2 in [True, False]:
+        for b3 in [True, False]:
+            for b4 in [True, False]:
+                for b5 in [True, False]:
+                    for b6 in [True, False]:
+                        cc_trad_search.append({"pontuation": b1,
+                     "numbers": b1,
+                     "lowercase": b2,
+                     "tokenize": True,
+                     "stem": b4,
+                     "stopw_minimal": b5,
+                     "stopw_nltk":b6,
+                     "tfidf":False})
+
+cfg = Config(filename ="data/KB.xml",
+             configurations=
+                 cc_trad_search
+             )
+
+
+print("start")
+pred, labels = cfg.search(metric_functions=[
                  jaccart,
                  dice,
                  nltk.edit_distance],
@@ -135,13 +158,7 @@ cfg4 = Config(filename ="data/KB.xml",
                  "jaccart",
                  "dice",
                  "edit_distance"
-             ],
-             configurations=
-                 cc_trad_search,
-             get_mat=False
-             )
-
-pred, labels = cfg4.evaluateGroup()
+             ])
 
 accuracy = []
 for km in pred.keys():
@@ -150,13 +167,12 @@ for km in pred.keys():
     print(" acc : " + str(obj) + " : " + str(Config.decode_config(km.format)) + " : name: " + km.name)
     accuracy.append([str(Config.decode_config(km.format)), km.name, obj])
 
-filehandler = open("group_acc_array.obj","wb")
+filehandler = open("acc_array_set.obj","wb")
 pickle.dump(accuracy,filehandler)
 filehandler.close()
 
 print("eval ended")
 
-"""
 
 cc_idf_search = []
 
@@ -178,16 +194,20 @@ for b1 in [True,False]:
                      "tfidf":True})
 
 print("start")
-cfg = Config(filename ="data/KB.xml",
+
+print(cc_idf_search)
+
+cfg1 = Config(filename ="data/KB.xml",
              configurations=
-                 cc_idf_search,
+                 [],
              delay=True
              )
+
 
 accuracy = []
 for cc in cc_idf_search:
 
-    pred, labels = cfg.idfsearch(
+    pred, labels = cfg1.idfsearch(
             metric_functions=[
                  spatial.distance.cosine,
                  spatial.distance.euclidean],
@@ -201,7 +221,7 @@ for cc in cc_idf_search:
         obj = accuracy_score(labels, pred[km], normalize=True)
 
         print(" acc : " + str(obj) + " : " + str(Config.decode_config(km.format)) + " : name: " + km.name)
-        accuracy.append([str(Config.decode_config(km.format)), km.name, obj])
+        accuracy.append([str(cc), km.name, obj])
 
 filehandler = open("acc_array_tdidf.obj","wb")
 pickle.dump(accuracy,filehandler)
