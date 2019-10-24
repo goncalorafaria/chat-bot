@@ -16,22 +16,6 @@ class Corpus(object):
 
         return rs.sort()
 
-    def crossed_inspection(self, q : Query) -> [ResultSet]:
-
-        hyper_rs = []
-
-        ## pode ser feito em paralelo
-
-        for qa in self.qa_corpus:
-            print(qa.ans.nr)
-            for question in qa.questions():
-                q.question = question
-
-                hyper_rs.append(
-                    (self.query(q),qa)
-                )
-
-        return hyper_rs
 
     def add(self, qa : QA):
 

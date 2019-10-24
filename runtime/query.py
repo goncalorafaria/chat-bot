@@ -1,6 +1,8 @@
 from runtime.metric import Metric
 from core.qa import QA, Question
 import heapq
+from scipy.special import softmax
+import numpy as np
 
 from typing import List
 
@@ -60,19 +62,34 @@ class ResultSet(Query):
 
         r = 0
 
+        #print(self.rankings)
+
+
         for candidate in qa.questions(): ## for every question in qa
 
             for mt, heap_sc in self.rankings :
                 value = mt.measure(candidate, self.question)
+
+                #print("new value")
+                #print(value)
+
 
                 if len(heap_sc) < self.n:
                     heapq.heappush(heap_sc, self.Node(candidate,value, qa))
                     r += 1
                 else:
                     if value < heap_sc[0].score:
+                        #print("swap old")
+                        #print("old " + str(heap_sc[0].score))
+                        #print("qid" + str(qa.ans.nr))
                         heapq.heappop(heap_sc)
                         heapq.heappush(heap_sc, self.Node(candidate, value, qa))
                         r += 1
+                        #print("### " + str(heap_sc[0].qa.ans.nr) + "### ")
+                    #else:
+                        #print("BOMBBBBBBBBBB")
+
+
 
         return r
 
@@ -83,16 +100,22 @@ class ResultSet(Query):
         for mt, heap_sc in self.rankings:
             coe = 1 / len(qa.questions())
             value = 0
+            gsc = []
             for candidate in qa.questions():  ## for every question in qa
-                value += coe * mt.measure(candidate, self.question)
+                gsc.append(mt.measure(candidate, self.question))
+
+            value = np.mean(gsc)
 
             if len(heap_sc) < self.n:
                 heapq.heappush(heap_sc, self.Node(None, value, qa))
                 r += 1
             else:
                 if value < heap_sc[0].score:
+                    #print("swap old")
+                    #print("old " + str(heap_sc[0].score))
                     heapq.heappop(heap_sc)
                     heapq.heappush(heap_sc, self.Node(None, value, qa))
+                    #print("### " + str(heap_sc[0].qa.ans.nr) + "### ")
                     r += 1
 
             return r

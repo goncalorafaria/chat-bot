@@ -9,6 +9,7 @@ class Question(object):
         self.format = qformat
         self.text = qtext
 
+        #print(qformat)
         #print(self.text)
 
     def get_format(self, name : str):

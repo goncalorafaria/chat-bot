@@ -2,23 +2,19 @@ import nltk
 import xml.etree.ElementTree as ET
 import string
 import pickle
-import sklearn
-import scipy
-from sklearn.decomposition import PCA
+
 from numpy import random
+
 
 
 # Get questions from XML
 def processKnowledgeBase(filename):
     random.seed(97031)
 
-    with open("data/test_questions.pickle", "rb") as f:
-        test_group = set(pickle.load(f))
-
     tree = ET.parse(filename)
     root = tree.getroot()
     questions = {}
-    dev=[]
+    #ansfilt = {}
 
     for documento in root.findall('documento'):
         faq_list = documento.find('faq_list')
@@ -26,26 +22,53 @@ def processKnowledgeBase(filename):
             perguntas = faq.find('perguntas')
             for pergunta in perguntas.iter('pergunta'):
 
-                if pergunta.text is not "":
+                stripedq = pergunta.text.strip()
 
-                    if faq.find('resposta').attrib['id'] in questions:
-                        questions[faq.find('resposta').attrib['id']].append(pergunta.text)
-                    else:
-                        questions[faq.find('resposta').attrib['id']] = [pergunta.text]
+                if not (len(stripedq) == 0):
+
+                    # print(stripedq)
+                    # print(stripedq + "###")
+                    # 535
+                    repetidos = {'275', '276', '277', '278', '279', '280', '281', '282', '283', '284', '285', '286',
+                                 '287', '288', '289', '290', '291', '292', '293', '294', '295', '296', '297', '298',
+                                 '299', '300', '301', '302', '303', '304', '305', '306', '307', '308', '309', '310',
+                                 '311', '312', '313', '314', '315', '448', '449', '450', '451', '452', '453', '454',
+                                 '455', '456', '457', '458', '467', '468', '469', '470', '471', '472', '473', '474',
+                                 '519', '520', '521', '522', '523', '524', '525', '526', '527', '528', '529', '530',
+                                 '531', '532', '609', '610'}
+
+                    dup = { "122":27, "189": 201 }
+
+                    if faq.find('resposta').attrib['id'] not in repetidos:
+
+                        #ansfilt[faq.find('resposta').attrib['id']] = faq.find('resposta').text.strip()
+
+                        if faq.find('resposta').attrib['id'] in dup.keys():
+                            key = dup[faq.find('resposta').attrib['id']]
+                        else:
+                            key = faq.find('resposta').attrib['id']
+
+                        if key in questions:
+                            questions[key].append(stripedq)
+                        else:
+                            questions[key] = [stripedq]
+
+
+    #for i in ansfilt.keys():
+    #    for j in ansfilt.keys():
+
+    #        if i != j :
+    #            if ansfilt[i] == ansfilt[j] :
+    #                print( i + " - " + j)
 
     train = {}
     dev = {}
 
     for ans, qs in questions.items():
-        maxi = len(qs) - 1
-        pick = random.randint(0, maxi)
 
-        dev[ans] = qs[pick]
-
-        if pick != len(qs)-1:
-            train[ans] = qs[:pick] + qs[pick+1:]
-        else:
-            train[ans] = qs[:pick]
+        if len(qs) > 1 :
+            dev[ans] = qs[0]
+            train[ans] = qs[1:]
 
     return train, dev
 
@@ -59,10 +82,10 @@ stopwords_list = {
     'minimal': get_fromfile("data/stops.txt")
 }
 
-
+#["a", "que", "de", "por", "para", "à", "é", "e", "com", "da", "do",
+# "o", "ou", "em", "um", "uma"]  # get_fromfile("data/stops.txt")
 
 # Preprocessing functions
-
 
 def removePunctuation(text):
     return text.translate(str.maketrans('', '', string.punctuation))
@@ -102,31 +125,3 @@ class RemoveStopWords():
 
     def __call__(self, tokens):
         return [token for token in tokens if not token in self.stopwords]
-
-
-class TFidf:
-    def __init__(self,
-                 train_question, lowercase, stopwords):
-        self.vectorizer = sklearn.\
-            feature_extraction.\
-            text.\
-            TfidfVectorizer(analyzer='word',
-                            lowercase=lowercase,
-                            stop_words=stopwords,
-                            smooth_idf=True,
-                            sublinear_tf=True,
-                            max_features=5000)
-        flat = []
-        for qs in train_question.values():
-            for quest in qs:
-                flat.append(" ".join(stem(tokenize(quest))))
-
-        X = self.vectorizer.fit_transform(flat)
-
-        #self.pca = PCA(n_components=800)
-        #self.pca.fit(X.toarray())
-
-    def __call__(self, string):
-        v = self.vectorizer.transform([" ".join(string)])
-        #return self.pca.transform(v.toarray())[0]
-        return v.toarray()[0]

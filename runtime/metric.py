@@ -53,9 +53,9 @@ def dice(tk1,tk2):
         return 1 - 2 * l_inters / (l_1 * l_2)
 
 
-#def masi(tk1,tk2):
+def masi(tk1,tk2):
 
-#    return masi_distance(set(tk1),set(tk2))
+    return masi_distance(set(tk1),set(tk2))
 
 
 # string jaro_similarity

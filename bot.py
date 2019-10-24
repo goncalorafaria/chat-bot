@@ -4,8 +4,9 @@ import nltk
 from runtime.metric import dice, jaccart
 from sklearn.metrics import accuracy_score
 from scipy import spatial
+import numpy as np
 import pickle
-
+"""
 cc_search = []
 
 for b1 in [True,False]:
@@ -39,7 +40,7 @@ for b1 in [True,False]:
                      "stopw_nltk":b5,
                      "tfidf":False})
 
-"""
+
 cfg1 = Config(filename ="data/KB.xml",
              metric_functions=[
                  spatial.distance.cosine,
@@ -64,7 +65,7 @@ for km in pred.keys():
 filehandler = open("acc_array_tdidf.obj","wb")
 pickle.dump(accuracy,filehandler)
 filehandler.close()
-"""
+
 #####
 #####
 
@@ -93,7 +94,9 @@ filehandler.close()
 
 print("eval ended")
 
+"""
 
+"""
 cfg3 = Config(filename ="data/KB.xml",
              metric_functions=[
                  spatial.distance.cosine,
@@ -103,7 +106,8 @@ cfg3 = Config(filename ="data/KB.xml",
                  "euclidean"
              ],
              configurations=
-                 cc_search
+                 cc_search,
+             get_mat=True
              )
 
 pred, labels = cfg3.evaluateGroup()
@@ -151,3 +155,54 @@ pickle.dump(accuracy,filehandler)
 filehandler.close()
 
 print("eval ended")
+
+"""
+
+cc_idf_search = []
+
+for b1 in [True,False]:
+    for b2 in [True, False]:
+        for b3 in [True, False]:
+            for b4 in [True, False]:
+                for b5 in [True, False]:
+                    for b6 in [True, False]:
+                        for b7 in [True, False]:
+                            cc_idf_search.append({"pontuation": b1,
+                     "numbers": b2,
+                     "acents": b3,
+                     "lowercase": b4,
+                     "tokenize": True,
+                     "stem": b5,
+                     "stopw_minimal": b6,
+                     "stopw_nltk": b7,
+                     "tfidf":True})
+
+print("start")
+cfg = Config(filename ="data/KB.xml",
+             configurations=
+                 cc_idf_search,
+             delay=True
+             )
+
+accuracy = []
+for cc in cc_idf_search:
+
+    pred, labels = cfg.idfsearch(
+            metric_functions=[
+                 spatial.distance.cosine,
+                 spatial.distance.euclidean],
+            metric_functions_names=[
+                 "cosine",
+                 "euclidean"
+            ],
+            idfconfig=cc)
+    for km in pred.keys():
+
+        obj = accuracy_score(labels, pred[km], normalize=True)
+
+        print(" acc : " + str(obj) + " : " + str(Config.decode_config(km.format)) + " : name: " + km.name)
+        accuracy.append([str(Config.decode_config(km.format)), km.name, obj])
+
+filehandler = open("acc_array_tdidf.obj","wb")
+pickle.dump(accuracy,filehandler)
+filehandler.close()
