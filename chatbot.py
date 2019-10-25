@@ -1,5 +1,4 @@
 import sys
-from core.corpus import Corpus
 from runtime.query import Query
 from core.qa import Question
 from core.metric import Metric
@@ -47,7 +46,7 @@ with open(output_filename, "w") as ofile:
 
         score = result.top().score
         #print(score)
-        answer = result.top().qa.answer().text()
+        answer = result.top().qa.answer().get()
         print(answer, file=ofile)
 
 print("Elapsed time: " + str(time() - start_time))

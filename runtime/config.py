@@ -279,14 +279,29 @@ class Config(object):
         #print(len(queries))
         #print(len(self.corpus.qa_corpus))
 
+        b = True
         for qq, ans in queries:
-
             rs = query_func(qq)
 
             #print(rs.rankings)
 
+            if b:
+                max = {}
+                min = {}
+                for m, hp in rs.rankings:
+                    max[m] = 0
+                    min[m] = 1
+                b = False
+
             for m, hp in rs.rankings:
                 mscores[m].append(hp[0].qa.ans.nr)
+
+
+                if hp[0].qa.ans.nr == ans:
+                    #print(hp[0].score)
+                    max[m] = max[m] if hp[0].score < max[m] else hp[0].score
+                else:
+                    min[m] = min[m] if hp[0].score > min[m] else hp[0].score
                 #print("############")
                 #print(hp[0].score)
                 #print("query:" + qq.question.text)
@@ -297,8 +312,11 @@ class Config(object):
             answ.append(
                 ans
             )
-            
 
+
+        for m in max.keys():
+            print("max: " + str(max[m]) + " " + m.name)
+            print("min: " + str(min[m]) + " " + m.name)
         return mscores, answ
 
 

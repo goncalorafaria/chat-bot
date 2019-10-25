@@ -51,7 +51,7 @@ def processKnowledgeBase(filename, validate = True):
                         if key in questions:
                             questions[key][0].append(stripedq)
                         else:
-                            questions[key] = ([stripedq], faq.find('resposta').text.strip())
+                            questions[key] = ([stripedq], "")
 
 
     #for i in ansfilt.keys():
