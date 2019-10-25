@@ -1,5 +1,5 @@
 import sys
-from runtime.query import Query
+from core.query import Query
 from core.qa import Question
 from core.metric import Metric
 from process.prep import get_fromfile as loadtest

@@ -66,22 +66,18 @@ filehandler.close()
 
 #####
 #####
-"""
+
 
 cc_trad_search = []
 
 for b1 in [True,False]:
     for b2 in [True, False]:
-        for b3 in [True, False]:
-            for b4 in [True, False]:
-                for b5 in [True, False]:
-                    for b6 in [True, False]:
-                        cc_trad_search.append({"pontuation": True,
+        cc_trad_search.append({"pontuation": True,
                      "numbers": True,
                      "lowercase": True,
                      "tokenize": True,
-                     "stem": b4,
-                     "stopw_minimal": b5,
+                     "stem": b1,
+                     "stopw_minimal": b2,
                      "stopw_nltk":False,
                      "tfidf":False})
 
@@ -119,17 +115,15 @@ print("eval ended")
 """
 cc_idf_search = []
 
-for b1 in [True,False]:
-    for b2 in [True, False]:
-        for b3 in [True, False]:
-            cc_idf_search.append({"pontuation": True,
+
+cc_idf_search.append({"pontuation": True,
                 "numbers": True,
                 "acents": True,
                 "lowercase":True,
                 "tokenize": True,
-                "stem": b1,
-                "stopw_minimal": b2,
-                "stopw_nltk": b3,
+                "stem": True,
+                "stopw_minimal":False,
+                "stopw_nltk": False,
                 "tfidf":True})
 
 print("start")
@@ -156,9 +150,7 @@ for cc in cc_idf_search:
             ],
             idfconfig=cc)
     for km in pred.keys():
-
         obj = accuracy_score(labels, pred[km], normalize=True)
-
         print(" acc : " + str(obj) + " : " + str(Config.decode_config(km.format)) + " : name: " + km.name)
         accuracy.append([str(cc), km.name, obj])
 
@@ -166,4 +158,3 @@ filehandler = open("acc_array_tdidf.obj","wb")
 pickle.dump(accuracy,filehandler)
 filehandler.close()
 
-"""

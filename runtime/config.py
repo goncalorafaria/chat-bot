@@ -1,5 +1,5 @@
 from core.corpus import Corpus
-from runtime.query import Query
+from core.query import Query
 from process import prep
 from core.qa import Question, Answer, QA
 from core.metric import Metric

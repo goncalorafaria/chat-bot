@@ -1,4 +1,4 @@
-from runtime.query import Query, ResultSet
+from core.query import Query, ResultSet
 from core.qa import QA
 
 
