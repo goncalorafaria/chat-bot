@@ -21,11 +21,16 @@ class Question(object):
 
 class Answer(object):
     def __init__(self,
-                 nr: int):
+                 nr: int,
+                 a=None):
         self.nr = nr
+        self.a = a
 
     def get(self) -> int:
         return self.nr
+
+    def text(self) -> str:
+        return self.a
 
 
 class QA(object):

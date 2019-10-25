@@ -1,8 +1,8 @@
-from runtime.metric import Metric
-from core.qa import QA, Question
+from core.metric import Metric
+from core.qa import QA
 import heapq
-from scipy.special import softmax
 import numpy as np
+from scipy.special import softmax
 
 from typing import List
 
@@ -88,18 +88,12 @@ class ResultSet(Query):
                         #print("### " + str(heap_sc[0].qa.ans.nr) + "### ")
                     #else:
                         #print("BOMBBBBBBBBBB")
-
-
-
         return r
 
     def considerGroup(self, qa: QA) -> int:
 
         r = 0
-
         for mt, heap_sc in self.rankings:
-            coe = 1 / len(qa.questions())
-            value = 0
             gsc = []
             for candidate in qa.questions():  ## for every question in qa
                 gsc.append(mt.measure(candidate, self.question))
@@ -111,11 +105,11 @@ class ResultSet(Query):
                 r += 1
             else:
                 if value < heap_sc[0].score:
-                    #print("swap old")
-                    #print("old " + str(heap_sc[0].score))
                     heapq.heappop(heap_sc)
                     heapq.heappush(heap_sc, self.Node(None, value, qa))
-                    #print("### " + str(heap_sc[0].qa.ans.nr) + "### ")
                     r += 1
 
-            return r
+        return r
+
+    def top(self):
+        return self.rankings[0][1][0]

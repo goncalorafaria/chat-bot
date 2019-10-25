@@ -2,9 +2,10 @@ from core.corpus import Corpus
 from runtime.query import Query
 from process import prep
 from core.qa import Question, Answer, QA
-from runtime.metric import Metric
+from core.metric import Metric
 import unidecode
 import sklearn
+from process.prep import processKnowledgeBase as extract
 
 
 def process_chain(text ,coded_config ):
@@ -18,9 +19,10 @@ def process_chain(text ,coded_config ):
 
     return stream
 
+
 class TFidf:
     def __init__(self,
-                 train_question, idformat):
+                 train_question, idformat, runtime=False):
         self.vectorizer = sklearn.\
             feature_extraction.\
             text.\
@@ -33,10 +35,15 @@ class TFidf:
         tmp[-1] = "0"
 
         idformat= "".join(tmp)
-
+        #print(train_question)
         for qs in train_question.values():
-            for quest in qs:
-                flat.append(" ".join(process_chain(quest,idformat)))
+            if runtime:
+                for quest in qs[0]:
+                    flat.append(" ".join(process_chain(quest, idformat)))
+            else:
+                for quest in qs:
+                    #print(quest)
+                    flat.append(" ".join(process_chain(quest, idformat)))
 
         self.vectorizer.fit(flat)
 
@@ -85,7 +92,8 @@ class Config(object):
 
         self.coded_configurations = [Config.code_config(c) for c in configurations]
         ## pode ser feito em paralelo
-        train, dev = prep.processKnowledgeBase(filename)
+        train, dev = prep.processKnowledgeBase(filename, validate=True)
+
 
         self.dev = dev
 
@@ -151,12 +159,10 @@ class Config(object):
         #self.train,
         #idfqformat)
 
-    def _idfsearch(self,
+    def idfsearch(self,
                    idfconfig,
                    metric_functions,
-                   metric_functions_names,
-                   query_func
-                   ):
+                   metric_functions_names):
 
         self.corpus = Corpus()
 
@@ -169,7 +175,7 @@ class Config(object):
         for k, qs in self.train.items():
 
             qs_q = []
-
+            #print(qs)
             for qtext in qs:
 
                 qformat = {}
@@ -197,29 +203,47 @@ class Config(object):
 
         return self._evaluate(self.corpus.query, metrics)
 
-    def idfsearch(self,
-                   idfconfig,
-                   metric_functions,
-                   metric_functions_names
-                   ):
-
-        return self._idfsearch(
-                   idfconfig,
-                   metric_functions,
-                   metric_functions_names,
-                   self.corpus.query)
-
     def idfsearchGroup(self,
                    idfconfig,
                    metric_functions,
-                   metric_functions_names
-                   ):
+                   metric_functions_names):
 
-        return self._idfsearch(
-                   idfconfig,
-                   metric_functions,
-                   metric_functions_names,
-                   self.corpus.queryGroup)
+        self.corpus = Corpus()
+
+        idfformat = Config.code_config(idfconfig)
+
+        Config.preprocessing_method_functions["tfidf"] = TFidf(
+            self.train,
+            idfformat)
+
+        for k, qs in self.train.items():
+
+            qs_q = []
+            # print(qs)
+            for qtext in qs:
+                qformat = {}
+
+                qformat[idfformat] = process_chain(qtext, idfformat)
+
+                qs_q.append(
+                    (qtext, qformat)
+                )
+
+            self.corpus.add(
+                QA(
+                    [Question(
+                        qtext,
+                        qformat
+                    ) for qtext, qformat in qs_q]
+                    , Answer(k)))
+
+        metrics = []
+        i = 0
+        for mf in metric_functions:
+            metrics.append(Metric(idfformat, mf, name=metric_functions_names[i]))
+            i += 1
+
+        return self._evaluate(self.corpus.queryGroup, metrics)
 
     def evaluate(self,metrics, decide=None):
         return self._evaluate(self.corpus.query,metrics)
@@ -303,4 +327,35 @@ class Config(object):
 
         return r_dict
 
+    @staticmethod
+    def loadCorpus(filename: str, configuration):
+
+        corpus = Corpus()
+
+        kb = extract(filename, validate=False)
+
+        Config.preprocessing_method_functions["tfidf"] = TFidf(
+            kb,
+            configuration,
+            runtime=True)
+
+        for k, qa in kb.items():
+
+            qs = qa[0]
+            a = qa[1]
+
+            questions = []
+
+            for qtext in qs:
+                qformat = {configuration: process_chain(qtext, configuration)}
+
+                questions.append(
+                    Question(qtext, qformat)
+                )
+
+            corpus.add(
+                QA(questions
+                   , Answer(k, a)))
+
+        return corpus
 

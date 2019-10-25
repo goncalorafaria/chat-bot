@@ -2,7 +2,6 @@ de
 o
 que
 a
-e
 um
 da
 para
@@ -10,6 +9,7 @@ uma
 do
 se
 em
+e
 por
 qual
 os
@@ -29,5 +29,9 @@ minha
 nao
 deve
 com
+documentos
+marca
+quem
 caso
 a
+quanto

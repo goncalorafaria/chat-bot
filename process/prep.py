@@ -8,13 +8,12 @@ from numpy import random
 
 
 # Get questions from XML
-def processKnowledgeBase(filename):
+def processKnowledgeBase(filename, validate = True):
     random.seed(97031)
 
     tree = ET.parse(filename)
     root = tree.getroot()
     questions = {}
-    #ansfilt = {}
 
     for documento in root.findall('documento'):
         faq_list = documento.find('faq_list')
@@ -48,10 +47,11 @@ def processKnowledgeBase(filename):
                         else:
                             key = faq.find('resposta').attrib['id']
 
+
                         if key in questions:
-                            questions[key].append(stripedq)
+                            questions[key][0].append(stripedq)
                         else:
-                            questions[key] = [stripedq]
+                            questions[key] = ([stripedq], faq.find('resposta').text.strip())
 
 
     #for i in ansfilt.keys():
@@ -61,16 +61,19 @@ def processKnowledgeBase(filename):
     #            if ansfilt[i] == ansfilt[j] :
     #                print( i + " - " + j)
 
-    train = {}
-    dev = {}
+    if validate :
+        train = {}
+        dev = {}
 
-    for ans, qs in questions.items():
+        for ans, qs in questions.items():
+            qs = qs[0]
+            if len(qs) > 1 :
+                dev[ans] = qs[0]
+                train[ans] = qs[1:]
 
-        if len(qs) > 1 :
-            dev[ans] = qs[0]
-            train[ans] = qs[1:]
-
-    return train, dev
+        return train, dev
+    else:
+        return questions
 
 def get_fromfile(fname):
     with open(fname, 'r') as file:
@@ -79,7 +82,7 @@ def get_fromfile(fname):
 
 stopwords_list = {
     'nltk': nltk.corpus.stopwords.words('portuguese'),
-    'minimal': get_fromfile("data/stops.txt")
+    'minimal': get_fromfile("./data/stops.txt")
 }
 
 #["a", "que", "de", "por", "para", "à", "é", "e", "com", "da", "do",
@@ -88,6 +91,7 @@ stopwords_list = {
 # Preprocessing functions
 
 def removePunctuation(text):
+    #print(text)
     return text.translate(str.maketrans('', '', string.punctuation))
 
 

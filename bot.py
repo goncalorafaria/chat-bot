@@ -1,73 +1,14 @@
-from runtime.config import Config
+import pickle
 
 import nltk
-from runtime.metric import dice, jaccart
-from sklearn.metrics import accuracy_score
 from scipy import spatial
-import numpy as np
-import pickle
+from sklearn.metrics import accuracy_score
+
+from runtime.config import Config
+from core.metric import dice, jaccart
+
+
 """
-cc_search = []
-
-for b1 in [True,False]:
-    for b2 in [True, False]:
-        for b3 in [True, False]:
-            for b4 in [True, False]:
-                for b5 in [True, False]:
-                    cc_search.append({"pontuation": True,
-                     "numbers": b1,
-                     "lowercase": b2,
-                     "tokenize": True,
-                     "stem": b3,
-                     "stopw_minimal": b4,
-                     "stopw_nltk":b5,
-                     "tfidf":True})
-
-
-cc_trad_search = []
-
-for b1 in [True,False]:
-    for b2 in [True, False]:
-        for b3 in [True, False]:
-            for b4 in [True, False]:
-                for b5 in [True, False]:
-                    cc_trad_search.append({"pontuation": True,
-                     "numbers": b1,
-                     "lowercase": b2,
-                     "tokenize": True,
-                     "stem": b3,
-                     "stopw_minimal": b4,
-                     "stopw_nltk":b5,
-                     "tfidf":False})
-
-
-cfg1 = Config(filename ="data/KB.xml",
-             metric_functions=[
-                 spatial.distance.cosine,
-                 spatial.distance.euclidean],
-             metric_functions_names=[
-                 "cosine",
-                 "euclidean"
-             ],
-             configurations=
-                 cc_search
-             )
-
-pred, labels = cfg1.evaluate()
-
-accuracy = []
-for km in pred.keys():
-    obj = accuracy_score(labels, pred[km],normalize=True)
-    print(km.format)
-    print(" acc : " + str(obj) + " : " + str(Config.decode_config(km.format)) + " : name: " + km.name)
-    accuracy.append([str(Config.decode_config(km.format)), km.name, obj])
-
-filehandler = open("acc_array_tdidf.obj","wb")
-pickle.dump(accuracy,filehandler)
-filehandler.close()
-
-#####
-#####
 
 cfg2 = Config(filename ="data/KB.xml",
              metric_functions=[
@@ -122,9 +63,10 @@ for km in pred.keys():
 filehandler = open("group_acc_array_tdidf.obj","wb")
 pickle.dump(accuracy,filehandler)
 filehandler.close()
+
+#####
+#####
 """
-#####
-#####
 
 cc_trad_search = []
 
@@ -134,13 +76,13 @@ for b1 in [True,False]:
             for b4 in [True, False]:
                 for b5 in [True, False]:
                     for b6 in [True, False]:
-                        cc_trad_search.append({"pontuation": b1,
-                     "numbers": b1,
-                     "lowercase": b2,
+                        cc_trad_search.append({"pontuation": True,
+                     "numbers": True,
+                     "lowercase": True,
                      "tokenize": True,
                      "stem": b4,
                      "stopw_minimal": b5,
-                     "stopw_nltk":b6,
+                     "stopw_nltk":False,
                      "tfidf":False})
 
 cfg = Config(filename ="data/KB.xml",
@@ -148,9 +90,8 @@ cfg = Config(filename ="data/KB.xml",
                  cc_trad_search
              )
 
-
 print("start")
-pred, labels = cfg.search(metric_functions=[
+pred, labels = cfg.searchGroup(metric_functions=[
                  jaccart,
                  dice,
                  nltk.edit_distance],
@@ -167,35 +108,34 @@ for km in pred.keys():
     print(" acc : " + str(obj) + " : " + str(Config.decode_config(km.format)) + " : name: " + km.name)
     accuracy.append([str(Config.decode_config(km.format)), km.name, obj])
 
-filehandler = open("acc_array_set.obj","wb")
+filehandler = open("group_acc_array_set.obj","wb")
 pickle.dump(accuracy,filehandler)
 filehandler.close()
 
 print("eval ended")
 
 
+
+"""
 cc_idf_search = []
 
 for b1 in [True,False]:
     for b2 in [True, False]:
         for b3 in [True, False]:
-            for b4 in [True, False]:
-                for b5 in [True, False]:
-                    for b6 in [True, False]:
-                        for b7 in [True, False]:
-                            cc_idf_search.append({"pontuation": b1,
-                     "numbers": b2,
-                     "acents": b3,
-                     "lowercase": b4,
-                     "tokenize": True,
-                     "stem": b5,
-                     "stopw_minimal": b6,
-                     "stopw_nltk": b7,
-                     "tfidf":True})
+            cc_idf_search.append({"pontuation": True,
+                "numbers": True,
+                "acents": True,
+                "lowercase":True,
+                "tokenize": True,
+                "stem": b1,
+                "stopw_minimal": b2,
+                "stopw_nltk": b3,
+                "tfidf":True})
 
 print("start")
 
 print(cc_idf_search)
+
 
 cfg1 = Config(filename ="data/KB.xml",
              configurations=
@@ -203,11 +143,10 @@ cfg1 = Config(filename ="data/KB.xml",
              delay=True
              )
 
-
 accuracy = []
 for cc in cc_idf_search:
 
-    pred, labels = cfg1.idfsearch(
+    pred, labels = cfg1.idfsearchGroup(
             metric_functions=[
                  spatial.distance.cosine,
                  spatial.distance.euclidean],
@@ -226,3 +165,5 @@ for cc in cc_idf_search:
 filehandler = open("acc_array_tdidf.obj","wb")
 pickle.dump(accuracy,filehandler)
 filehandler.close()
+
+"""
