@@ -270,9 +270,10 @@ class Config(object):
         answ = []
 
         mscores= {}
-
+        s = {}
         for m in metrics:
             mscores[m] = []
+            s[m]=0
 
         c=0
 
@@ -298,6 +299,8 @@ class Config(object):
 
 
                 if hp[0].qa.ans.nr == ans:
+                    if hp[0].score <= 1:
+                        s[m] += 1
                     #print(hp[0].score)
                     max[m] = max[m] if hp[0].score < max[m] else hp[0].score
                 else:
@@ -314,9 +317,10 @@ class Config(object):
             )
 
 
-        for m in max.keys():
-            print("max: " + str(max[m]) + " " + m.name)
-            print("min: " + str(min[m]) + " " + m.name)
+        #for m in max.keys():
+        #    print("max: " + str(max[m]) + " " + m.name)
+        #    print("min: " + str(min[m]) + " " + m.name)
+        #    print(s[m]/len(queries))
         return mscores, answ
 
 

@@ -4,7 +4,7 @@ from core.qa import Question
 from core.metric import Metric
 from process.prep import get_fromfile as loadtest
 from runtime.config import process_chain, Config
-from scipy.spatial.distance import cosine
+from scipy.spatial.distance import euclidean
 from time import time
 
 assert len(sys.argv) > 2 , "Insufficient number of arguments"
@@ -35,7 +35,7 @@ corpus = Config.loadCorpus(
 questions = [Question(q ,{config : process_chain(q.strip(), config)})
              for q in loadtest(test_filename)]
 
-measure = Metric(config, cosine)
+measure = Metric(config, euclidean)
 
 queries = [Query(q, [measure]) for q in questions]
 
@@ -46,8 +46,11 @@ with open(output_filename, "w") as ofile:
 
         score = result.top().score
         #print(score)
-        answer = result.top().qa.answer().get()
-        print(answer, file=ofile)
+        if score <= 1.1 :
+            answer = result.top().qa.answer().get()
+            print(answer, file=ofile)
+        else:
+            print("0", file=ofile)
 
 print("Elapsed time: " + str(time() - start_time))
 print("Terminated answering every query.")
