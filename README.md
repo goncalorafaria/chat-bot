@@ -10,5 +10,7 @@
 ## Authors
 
 Gonçalo Faria
+
 Margarida Campos
+
 Gustavo Morais
